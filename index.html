@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse 98.7 Manager Dashboard</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="manager.css">
+
+  <!-- Internal style (for rubric requirement) -->
+  <style>
+    .required::after {
+      content: "*";
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Pulse 98.7 - Manager Dashboard</h1>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="index.html">Schedule</a></li>
+        <li><a href="report.html">Reports</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Assign DJs to Time Slots</h2>
+
+      <!-- Form with validation -->
+      <form>
+        <label for="day" class="required">Select Day:</label>
+        <input type="date" id="day" name="day" required><br><br>
+
+        <label for="morning" class="required">Morning (8AM - 12PM):</label>
+        <select id="morning" name="morning" required>
+          <option value="">--Select DJ--</option>
+          <option value="dj1">DJ Alex</option>
+          <option value="dj2">DJ Maya</option>
+          <option value="dj3">DJ Rico</option>
+        </select><br><br>
+
+        <label for="afternoon" class="required">Afternoon (12PM - 4PM):</label>
+        <select id="afternoon" name="afternoon" required>
+          <option value="">--Select DJ--</option>
+          <option value="dj1">DJ Alex</option>
+          <option value="dj2">DJ Maya</option>
+          <option value="dj3">DJ Rico</option>
+        </select><br><br>
+
+        <label for="evening" class="required">Evening (4PM - 8PM):</label>
+        <select id="evening" name="evening" required>
+          <option value="">--Select DJ--</option>
+          <option value="dj1">DJ Alex</option>
+          <option value="dj2">DJ Maya</option>
+          <option value="dj3">DJ Rico</option>
+        </select><br><br>
+
+        <input type="submit" value="Save Assignments">
+        <input type="reset" value="Clear">
+      </form>
+    </section>
+
+    <section>
+      <h2>Saved Assignments</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Time Slot</th>
+            <th>DJ Assigned</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Morning</td>
+            <td>---</td>
+          </tr>
+          <tr>
+            <td>Afternoon</td>
+            <td>---</td>
+          </tr>
+          <tr>
+            <td>Evening</td>
+            <td>---</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <aside>
+      <h3>Tips</h3>
+      <ul>
+        <li>Use this form to assign DJs daily.</li>
+        <li>Always double-check time slots before saving.</li>
+        <li>Review playlist differences on the Reports page.</li>
+      </ul>
+    </aside>
+  </main>
+
+</body>
+</html>

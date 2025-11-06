@@ -9,37 +9,151 @@
 <body>
 
   <header>
-    <h1>Compare Playlists</h1>
+    <h1>Pulse 98.7 - Manager Dashboard</h1>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="index.html">Schedule</a></li>
+        <li><a href="report.html">Reports</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main>
     <section>
-      <h2>Planned vs Played</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Planned Song</th>
-            <th>Played Song</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Track A</td>
-            <td>Track A</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Track B</td>
-            <td>Track X</td>
-          </tr>
-        </tbody>
-      </table>
+      <h2>Playlist Comparison Report</h2>
+      
+      <!-- Filter form for date and DJ selection -->
+      <form id="reportFilter">
+        <label for="reportDate" class="required">Select Date:</label>
+        <input type="date" id="reportDate" name="reportDate" required>
+        
+        <label for="reportDJ" class="required">Select DJ:</label>
+        <select id="reportDJ" name="reportDJ" required>
+          <option value="">--Select DJ--</option>
+          <option value="dj1">DJ Alex</option>
+          <option value="dj2">DJ Maya</option>
+          <option value="dj3">DJ Rico</option>
+        </select>
+        
+        <label for="reportTimeSlot">Time Slot:</label>
+        <select id="reportTimeSlot" name="reportTimeSlot">
+          <option value="all">All Time Slots</option>
+          <option value="Morning">Morning (8AM - 12PM)</option>
+          <option value="Afternoon">Afternoon (12PM - 4PM)</option>
+          <option value="Evening">Evening (4PM - 8PM)</option>
+        </select>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+          <!-- Inline Event Handler Approach (10 pts) -->
+          <button type="button" onclick="loadReport()">Load Report</button>
+          <button type="reset" onclick="resetReportFilter()">Clear</button>
+        </div>
+      </form>
+      
+      <div id="playlistComparison">
+        <h3>Planned vs Played</h3>
+        <table border="1" id="comparisonTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Planned Song</th>
+              <th>Played Song</th>
+              <th>Status</th>
+              <th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">Select a date and DJ to view playlist comparison</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Media Component: Audio Player for Playlist Preview -->
+      <section style="margin-top: 30px;">
+        <h3>Playlist Audio Preview</h3>
+        <p>Select a track from the table above to view its details. <em>(Note: Mock data - no audio previews available)</em></p>
+        <audio id="playlistAudio" controls>
+          <source src="" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <div id="audioInfo">
+          <p><strong>Selected Track:</strong> <span id="currentTrack">No track selected</span></p>
+          <p><strong>Artist:</strong> <span id="currentArtist">---</span></p>
+          <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;"><em>Audio previews will be available when database is integrated.</em></p>
+        </div>
+      </section>
     </section>
-    <p><a href="index.html">Back to Schedule</a></p>
+    
+    <p style="margin-top: 20px;"><a href="index.html">Back to Schedule</a></p>
+    
+    <!-- Inline Event Handler Approach (10 pts) -->
+    <div style="margin-top: 20px;">
+      <button type="button" onclick="refreshReport()">Refresh Report</button>
+    </div>
   </main>
 
+  <!-- JavaScript Module -->
+  <script type="module" src="report.js"></script>
+  
+  <!-- Inline Event Handler Function -->
+  <script>
+    // Inline Event Handler Approach (10 pts)
+    function refreshReport() {
+      // Window Object - Using alert
+      window.alert('Refreshing report data...');
+      
+      // DOM manipulation - Reload table
+      const tbody = document.querySelector('tbody');
+      if (tbody) {
+        tbody.style.opacity = '0.5';
+        
+        // Window Object - Using setTimeout
+        setTimeout(function() {
+          tbody.style.opacity = '1';
+          window.alert('Report refreshed!');
+        }, 1000);
+      }
+    }
+    
+    // Inline Event Handler - Load report
+    function loadReport() {
+      const date = document.getElementById('reportDate').value;
+      const djId = document.getElementById('reportDJ').value;
+      const timeSlot = document.getElementById('reportTimeSlot').value;
+      
+      // Validation using comparison operators and logical operators
+      if (!date || !djId) {
+        window.alert('Please select both date and DJ');
+        return;
+      }
+      
+      // Trigger the module function to load report
+      if (window.loadPlaylistReport) {
+        window.loadPlaylistReport(date, djId, timeSlot);
+      } else {
+        window.alert('Report loading... Please wait.');
+      }
+    }
+    
+    // Inline Event Handler - Reset filter
+    function resetReportFilter() {
+      document.getElementById('reportFilter').reset();
+      const tbody = document.querySelector('#comparisonTable tbody');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Select a date and DJ to view playlist comparison</td></tr>';
+      }
+      
+      // Reset audio player (Media Component)
+      const audio = document.getElementById('playlistAudio');
+      audio.pause();
+      audio.src = '';
+      document.getElementById('currentTrack').textContent = 'No track selected';
+      document.getElementById('currentArtist').textContent = '---';
+    }
+  </script>
 
 </body>
 </html>

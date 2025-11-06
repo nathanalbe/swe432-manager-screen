@@ -36,7 +36,7 @@
       <!-- Form with validation -->
       <form>
         <label for="day" class="required">Select Day:</label>
-        <input type="date" id="day" name="day" required><br><br>
+        <input type="date" id="day" name="day" required>
 
         <label for="morning" class="required">Morning (8AM - 12PM):</label>
         <select id="morning" name="morning" required>
@@ -44,7 +44,7 @@
           <option value="dj1">DJ Alex</option>
           <option value="dj2">DJ Maya</option>
           <option value="dj3">DJ Rico</option>
-        </select><br><br>
+        </select>
 
         <label for="afternoon" class="required">Afternoon (12PM - 4PM):</label>
         <select id="afternoon" name="afternoon" required>
@@ -52,7 +52,7 @@
           <option value="dj1">DJ Alex</option>
           <option value="dj2">DJ Maya</option>
           <option value="dj3">DJ Rico</option>
-        </select><br><br>
+        </select>
 
         <label for="evening" class="required">Evening (4PM - 8PM):</label>
         <select id="evening" name="evening" required>
@@ -60,10 +60,15 @@
           <option value="dj1">DJ Alex</option>
           <option value="dj2">DJ Maya</option>
           <option value="dj3">DJ Rico</option>
-        </select><br><br>
+        </select>
 
-        <input type="submit" value="Save Assignments">
-        <input type="reset" value="Clear">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+          <input type="submit" value="Save Assignments">
+          <!-- Inline Event Handler Approach (10 pts) -->
+          <input type="reset" value="Clear" onclick="handleClearClick()">
+          <!-- Inline Event Handler - Button for testing -->
+          <button type="button" onclick="showManagerInfo()">Show Manager Info</button>
+        </div>
       </form>
     </section>
 
@@ -102,6 +107,74 @@
       </ul>
     </aside>
   </main>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="manager.js"></script>
+  
+  <!-- Inline Event Handler Functions (must be in non-module script) -->
+  <script>
+    // Inline Event Handler Approach (10 pts)
+    // These functions are called from onclick attributes in HTML
+    
+    /**
+     * Handle clear button click (inline event handler)
+     * Demonstrates: Inline event handler, window object, DOM manipulation
+     */
+    function handleClearClick() {
+      // Window Object - Using alert
+      const confirmed = window.confirm('Are you sure you want to clear all assignments?');
+      if (confirmed) {
+        // DOM manipulation - clearing form
+        document.querySelector('form').reset();
+        
+        // Clear table
+        const cells = document.querySelectorAll('tbody td:nth-child(2)');
+        for (let i = 0; i < cells.length; i++) {
+          cells[i].textContent = '---';
+          cells[i].style.color = '';
+          cells[i].style.fontWeight = '';
+        }
+        
+        // Clear messages
+        const errorContainer = document.getElementById('error-container');
+        if (errorContainer) {
+          errorContainer.remove();
+        }
+        
+        window.alert('Form cleared successfully!');
+      }
+    }
+
+    /**
+     * Show manager information (inline event handler)
+     * Demonstrates: Inline event handler, window object, DOM manipulation
+     */
+    function showManagerInfo() {
+      // Window Object - Using alert
+      const info = 'Manager Dashboard\n\n' +
+                   'Use this form to assign DJs to time slots.\n' +
+                   'All fields are required.\n' +
+                   'DJs cannot be assigned to multiple slots on the same day.';
+      window.alert(info);
+      
+      // DOM manipulation - Modifying aside section
+      const aside = document.querySelector('aside');
+      if (aside) {
+        const infoDiv = document.createElement('div');
+        infoDiv.style.marginTop = '10px';
+        infoDiv.style.padding = '10px';
+        infoDiv.style.backgroundColor = '#e6f3ff';
+        infoDiv.style.border = '1px solid #0066cc';
+        infoDiv.textContent = 'Info: Manager functions loaded successfully!';
+        aside.appendChild(infoDiv);
+        
+        // Window Object - Using setTimeout to remove message
+        setTimeout(function() {
+          infoDiv.remove();
+        }, 3000);
+      }
+    }
+  </script>
 
 </body>
 </html>

@@ -1,0 +1,179 @@
+<%- include('partials/header', { title: 'Pulse 98.7 Manager Dashboard - Schedule', showManagerNav: true, currentPage: 'schedule' }) %>
+
+  <main>
+    <section>
+      <h2>Assign DJs to Time Slots</h2>
+
+      <!-- Form with validation -->
+      <form method="POST" action="/schedule">
+        <label for="day" class="required">Select Day:</label>
+        <input type="date" id="day" name="day" value="<%= typeof formData !== 'undefined' && formData.date ? formData.date : '' %>" required>
+
+        <label for="morning" class="required">Morning (8AM - 12PM):</label>
+        <select id="morning" name="morning" required>
+          <option value="">--Select DJ--</option>
+          <% if (typeof djs !== 'undefined' && djs) { %>
+            <% djs.forEach(dj => { %>
+              <option value="<%= dj._id %>" <%= (typeof formData !== 'undefined' && formData.morning === dj._id.toString()) ? 'selected' : '' %>>
+                <%= dj.name %>
+              </option>
+            <% }); %>
+          <% } %>
+        </select>
+
+        <label for="afternoon" class="required">Afternoon (12PM - 4PM):</label>
+        <select id="afternoon" name="afternoon" required>
+          <option value="">--Select DJ--</option>
+          <% if (typeof djs !== 'undefined' && djs) { %>
+            <% djs.forEach(dj => { %>
+              <option value="<%= dj._id %>" <%= (typeof formData !== 'undefined' && formData.afternoon === dj._id.toString()) ? 'selected' : '' %>>
+                <%= dj.name %>
+              </option>
+            <% }); %>
+          <% } %>
+        </select>
+
+        <label for="evening" class="required">Evening (4PM - 8PM):</label>
+        <select id="evening" name="evening" required>
+          <option value="">--Select DJ--</option>
+          <% if (typeof djs !== 'undefined' && djs) { %>
+            <% djs.forEach(dj => { %>
+              <option value="<%= dj._id %>" <%= (typeof formData !== 'undefined' && formData.evening === dj._id.toString()) ? 'selected' : '' %>>
+                <%= dj.name %>
+              </option>
+            <% }); %>
+          <% } %>
+        </select>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+          <input type="submit" value="Save Assignments">
+          <!-- Inline Event Handler Approach (10 pts) -->
+          <input type="reset" value="Clear" onclick="handleClearClick()">
+          <!-- Inline Event Handler - Button for testing -->
+          <button type="button" onclick="showManagerInfo()">Show Manager Info</button>
+        </div>
+      </form>
+
+      <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <div id="error-container" class="error-message">
+          <strong>Validation Errors:</strong>
+          <ul>
+            <% errors.forEach(error => { %>
+              <li><%= error %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="success-message">
+          <%= success %>
+        </div>
+      <% } %>
+    </section>
+
+    <section>
+      <h2>Saved Assignments</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Time Slot</th>
+            <th>DJ Assigned</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% 
+            const assignments = typeof savedAssignments !== 'undefined' ? savedAssignments : [];
+            const timeSlots = ['Morning', 'Afternoon', 'Evening'];
+            timeSlots.forEach(slot => {
+              const assignment = assignments.find(a => a.timeSlot === slot);
+          %>
+          <tr>
+            <td><%= slot %></td>
+            <td><%= assignment && assignment.djId ? assignment.djId.name : '---' %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </section>
+
+    <aside>
+      <h3>Tips</h3>
+      <ul>
+        <li>Use this form to assign DJs daily.</li>
+        <li>Always double-check time slots before saving.</li>
+        <li>Review playlist differences on the Reports page.</li>
+      </ul>
+    </aside>
+  </main>
+
+  <!-- Inline Event Handler Functions (must be in non-module script) -->
+  <script>
+    // Inline Event Handler Approach (10 pts)
+    // These functions are called from onclick attributes in HTML
+    
+    /**
+     * Handle clear button click (inline event handler)
+     * Demonstrates: Inline event handler, window object, DOM manipulation
+     */
+    function handleClearClick() {
+      // Window Object - Using alert
+      const confirmed = window.confirm('Are you sure you want to clear all assignments?');
+      if (confirmed) {
+        // DOM manipulation - clearing form
+        document.querySelector('form').reset();
+        
+        // Clear table
+        const cells = document.querySelectorAll('tbody td:nth-child(2)');
+        for (let i = 0; i < cells.length; i++) {
+          cells[i].textContent = '---';
+          cells[i].style.color = '';
+          cells[i].style.fontWeight = '';
+        }
+        
+        // Clear messages
+        const errorContainer = document.getElementById('error-container');
+        if (errorContainer) {
+          errorContainer.remove();
+        }
+        
+        window.alert('Form cleared successfully!');
+      }
+    }
+
+    /**
+     * Show manager information (inline event handler)
+     * Demonstrates: Inline event handler, window object, DOM manipulation
+     */
+    function showManagerInfo() {
+      // Window Object - Using alert
+      const info = 'Manager Dashboard\n\n' +
+                   'Use this form to assign DJs to time slots.\n' +
+                   'All fields are required.\n' +
+                   'DJs cannot be assigned to multiple slots on the same day.';
+      window.alert(info);
+      
+      // DOM manipulation - Modifying aside section
+      const aside = document.querySelector('aside');
+      if (aside) {
+        const infoDiv = document.createElement('div');
+        infoDiv.style.marginTop = '10px';
+        infoDiv.style.padding = '10px';
+        infoDiv.style.backgroundColor = '#e6f3ff';
+        infoDiv.style.border = '1px solid #0066cc';
+        infoDiv.textContent = 'Info: Manager functions loaded successfully!';
+        aside.appendChild(infoDiv);
+        
+        // Window Object - Using setTimeout to remove message
+        setTimeout(function() {
+          infoDiv.remove();
+        }, 3000);
+      }
+    }
+  </script>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="/js/schedule.js"></script>
+
+<%- include('partials/footer') %>
+

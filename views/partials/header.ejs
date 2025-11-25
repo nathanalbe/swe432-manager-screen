@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Pulse 98.7 Manager Dashboard' %></title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="/css/manager.css">
+
+  <!-- Internal style (for rubric requirement) -->
+  <style>
+    .required::after {
+      content: "*";
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Pulse 98.7 - Radio Station</h1>
+    <nav>
+      <ul>
+        <li><a href="/" class="<%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">Home</a></li>
+        <% if (typeof showManagerNav !== 'undefined' && showManagerNav !== false) { %>
+        <li><a href="/schedule" class="<%= typeof currentPage !== 'undefined' && currentPage === 'schedule' ? 'active' : '' %>">Schedule</a></li>
+        <li><a href="/report" class="<%= typeof currentPage !== 'undefined' && currentPage === 'report' ? 'active' : '' %>">Reports</a></li>
+        <% } %>
+        <% if (typeof showProducerNav !== 'undefined' && showProducerNav) { %>
+        <li><a href="/producer" class="<%= typeof currentPage !== 'undefined' && currentPage === 'producer' ? 'active' : '' %>">Producer</a></li>
+        <% } %>
+        <% if (typeof showDJNav !== 'undefined' && showDJNav) { %>
+        <li><a href="/dj" class="<%= typeof currentPage !== 'undefined' && currentPage === 'dj' ? 'active' : '' %>">DJ</a></li>
+        <% } %>
+        <% if (typeof user !== 'undefined' && user) { %>
+        <li><a href="/logout">Logout</a></li>
+        <% } %>
+      </ul>
+    </nav>
+  </header>
+

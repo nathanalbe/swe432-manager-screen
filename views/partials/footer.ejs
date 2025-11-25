@@ -1,0 +1,10 @@
+  <!-- JavaScript Modules -->
+  <% if (typeof scripts !== 'undefined' && scripts) { %>
+    <% scripts.forEach(script => { %>
+      <script type="module" src="<%= script %>"></script>
+    <% }); %>
+  <% } %>
+
+</body>
+</html>
+

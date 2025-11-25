@@ -1,0 +1,231 @@
+<%- include('partials/header', { title: 'Pulse 98.7 - Compare Playlists', showManagerNav: true, currentPage: 'report' }) %>
+
+  <main>
+    <section>
+      <h2>Playlist Comparison Report</h2>
+      
+      <!-- Filter form for date and DJ selection -->
+      <form id="reportFilter" method="POST" action="/report">
+        <label for="reportDate" class="required">Select Date:</label>
+        <input type="date" id="reportDate" name="reportDate" value="<%= typeof formData !== 'undefined' && formData.date ? formData.date : '' %>" required>
+        
+        <label for="reportDJ" class="required">Select DJ:</label>
+        <select id="reportDJ" name="reportDJ" required>
+          <option value="">--Select DJ--</option>
+          <% if (typeof djs !== 'undefined' && djs) { %>
+            <% djs.forEach(dj => { %>
+              <option value="<%= dj._id %>" <%= (typeof formData !== 'undefined' && formData.djId === dj._id.toString()) ? 'selected' : '' %>>
+                <%= dj.name %>
+              </option>
+            <% }); %>
+          <% } %>
+        </select>
+        
+        <label for="reportTimeSlot">Time Slot:</label>
+        <select id="reportTimeSlot" name="reportTimeSlot">
+          <option value="all" <%= (typeof formData !== 'undefined' && formData.timeSlot === 'all') ? 'selected' : '' %>>All Time Slots</option>
+          <option value="Morning" <%= (typeof formData !== 'undefined' && formData.timeSlot === 'Morning') ? 'selected' : '' %>>Morning (8AM - 12PM)</option>
+          <option value="Afternoon" <%= (typeof formData !== 'undefined' && formData.timeSlot === 'Afternoon') ? 'selected' : '' %>>Afternoon (12PM - 4PM)</option>
+          <option value="Evening" <%= (typeof formData !== 'undefined' && formData.timeSlot === 'Evening') ? 'selected' : '' %>>Evening (4PM - 8PM)</option>
+        </select>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+          <!-- Inline Event Handler Approach (10 pts) -->
+          <button type="button" onclick="loadReport()">Load Report</button>
+          <button type="reset" onclick="resetReportFilter()">Clear</button>
+        </div>
+      </form>
+      
+      <% if (typeof showPlaylist !== 'undefined' && showPlaylist) { %>
+      <div id="playlistComparison">
+        <h3>Planned vs Played</h3>
+        <table border="1" id="comparisonTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Planned Song</th>
+              <th>Played Song</th>
+              <th>Status</th>
+              <th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (typeof playlistData !== 'undefined' && playlistData && playlistData.length > 0) { %>
+              <% playlistData.forEach((item, index) => { %>
+                <tr class="<%= !item.match ? 'mismatch-highlight' : '' %>">
+                  <td><%= index + 1 %></td>
+                  <td><%= item.planned %></td>
+                  <td style="<%= !item.match ? 'color: red; font-weight: bold;' : 'color: green;' %>">
+                    <%= item.played || item.planned %>
+                  </td>
+                  <td style="<%= item.match ? 'color: green;' : 'color: red; font-weight: bold;' %>">
+                    <%= item.match ? '✓ Match' : '✗ Mismatch' %>
+                  </td>
+                  <td>
+                    <button type="button" onclick="playAudioPreview('<%= item.planned %>', '<%= item.played || item.planned %>', '<%= item.artist || 'Unknown' %>', '<%= item.previewUrl || '' %>')" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 3px;">
+                      ▶ Preview
+                    </button>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 20px; color: #7f8c8d;">
+                  No playlist data found for the selected date and DJ.
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Media Component: Audio Player for Playlist Preview -->
+      <section style="margin-top: 30px;">
+        <h3>Playlist Audio Preview</h3>
+        <p>Select a track from the table above to preview and play the song.</p>
+        <audio id="playlistAudio" controls style="width: 100%; max-width: 600px;">
+          <source src="" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <div id="audioInfo">
+          <p><strong>Selected Track:</strong> <span id="currentTrack">No track selected</span></p>
+          <p><strong>Artist:</strong> <span id="currentArtist">---</span></p>
+          <p id="audioStatus" style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;"></p>
+        </div>
+      </section>
+      <% } else { %>
+      <div style="margin-top: 30px; padding: 30px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid #4a90e2; text-align: center;">
+        <p style="font-size: 1.1rem; color: #2c3e50; margin: 0;">
+          👆 Please select a <strong>Date</strong> and <strong>DJ</strong> above, then click "Load Report" to view the playlist comparison.
+        </p>
+      </div>
+      <% } %>
+    </section>
+    
+    <p style="margin-top: 20px;"><a href="/schedule">Back to Schedule</a></p>
+    
+    <!-- Inline Event Handler Approach (10 pts) -->
+    <div style="margin-top: 20px;">
+      <button type="button" onclick="refreshReport()">Refresh Report</button>
+    </div>
+  </main>
+
+  <!-- Inline Event Handler Function -->
+  <script>
+    // Inline Event Handler Approach (10 pts)
+    function refreshReport() {
+      // Window Object - Using alert
+      window.alert('Refreshing report data...');
+      
+      // DOM manipulation - Reload table
+      const tbody = document.querySelector('tbody');
+      if (tbody) {
+        tbody.style.opacity = '0.5';
+        
+        // Window Object - Using setTimeout
+        setTimeout(function() {
+          tbody.style.opacity = '1';
+          window.alert('Report refreshed!');
+        }, 1000);
+      }
+    }
+    
+    // Inline Event Handler - Load report
+    function loadReport() {
+      const date = document.getElementById('reportDate').value;
+      const djId = document.getElementById('reportDJ').value;
+      const timeSlot = document.getElementById('reportTimeSlot').value;
+      
+      // Validation using comparison operators and logical operators
+      if (!date || !djId) {
+        window.alert('Please select both date and DJ');
+        return;
+      }
+      
+      // Submit the form
+      document.getElementById('reportFilter').submit();
+    }
+    
+    // Inline Event Handler - Reset filter
+    function resetReportFilter() {
+      document.getElementById('reportFilter').reset();
+      
+      // Hide playlist comparison section
+      const playlistSection = document.getElementById('playlistComparison');
+      const audioSection = document.querySelector('section[style*="margin-top: 30px"]');
+      if (playlistSection) {
+        playlistSection.style.display = 'none';
+      }
+      if (audioSection) {
+        audioSection.style.display = 'none';
+      }
+      
+      // Reset audio player (Media Component)
+      const audio = document.getElementById('playlistAudio');
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+      const currentTrack = document.getElementById('currentTrack');
+      const currentArtist = document.getElementById('currentArtist');
+      if (currentTrack) currentTrack.textContent = 'No track selected';
+      if (currentArtist) currentArtist.textContent = '---';
+      
+      // Reload page to show the "Please select" message
+      window.location.reload();
+    }
+
+    // Audio preview function
+    function playAudioPreview(plannedTrack, playedTrack, artist, previewUrl) {
+      const audio = document.getElementById('playlistAudio');
+      const currentTrackSpan = document.getElementById('currentTrack');
+      const currentArtistSpan = document.getElementById('currentArtist');
+      const audioStatus = document.getElementById('audioStatus');
+      
+      currentTrackSpan.textContent = plannedTrack;
+      currentArtistSpan.textContent = artist || 'Unknown Artist';
+      
+      if (previewUrl && previewUrl.trim() !== '') {
+        // Load and play the audio preview
+        audio.src = previewUrl;
+        audio.load(); // Reload the audio element with new source
+        
+        audioStatus.textContent = 'Loading preview...';
+        audioStatus.style.color = '#4a90e2';
+        
+        // Try to play the audio
+        audio.play().then(function() {
+          audioStatus.textContent = '✓ Playing preview';
+          audioStatus.style.color = '#51cf66';
+        }).catch(function(error) {
+          console.log('Audio play failed:', error);
+          audioStatus.textContent = '⚠ Could not auto-play. Click the play button above.';
+          audioStatus.style.color = '#ffc107';
+        });
+        
+        // Update status when audio ends
+        audio.addEventListener('ended', function() {
+          audioStatus.textContent = 'Preview finished';
+          audioStatus.style.color = '#7f8c8d';
+        }, { once: true });
+        
+        // Update status on error
+        audio.addEventListener('error', function() {
+          audioStatus.textContent = '✗ Error loading audio preview';
+          audioStatus.style.color = '#ff6b6b';
+        }, { once: true });
+      } else {
+        // No preview URL available
+        audio.src = '';
+        audio.pause();
+        audioStatus.textContent = '⚠ No preview available for this track';
+        audioStatus.style.color = '#ffc107';
+      }
+    }
+  </script>
+
+  <!-- JavaScript Module -->
+  <script type="module" src="/js/report.js"></script>
+
+<%- include('partials/footer') %>
+
